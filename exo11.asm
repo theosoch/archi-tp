@@ -245,7 +245,7 @@ porg_machine_1_essorage_loop_end:
 porg_machine_2:
     stmfd sp!, {r1-r4, lr}
 
-    mov r1, #6
+    mov r1, #0
     bl afficher_temperature
 
     bl remplir
