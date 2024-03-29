@@ -4,20 +4,20 @@
 .equ X_DEAD, ' '
 
 grille:
-.ascii "  o  o          "
-.ascii "  ooo    ooo  o "
-.ascii "o o     ooo o   "
-.ascii "    o o o o o  o"
-.ascii "o    ooo o      "
-.ascii "       o oo     "
-.ascii "     ooo        "
-.ascii "       o  o o o "
-.ascii " o   o     o    "
-.ascii "o   oo ooo o    "
-.ascii "o     oo        "
-.ascii "     o   o     o"
-.ascii "oo o  o     o o "
-.ascii "    oo    o     "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "                "
+.ascii "    ooo         "
+.ascii "      o         "
+.ascii "     o          "
+.ascii "                "
 .ascii "                "
 .ascii "                "
 .align
@@ -103,44 +103,29 @@ generation:
     mov r8, #X_ALIVE
     mov r9, #X_DEAD
 
-    b generation_loop_1
+    b generation_loop
 
-generation_loop_1:
+generation_loop:
     cmp r2, r3
-    beq generation_loop_1_end
+    beq generation_loop_end
 
     ldrb r5, [r2]
     ldrb r6, [r4]
 
-    cmp r5, r8
-    bleq generation_loop_1_if_alive_1
-    cmp r5, r9
-    bleq generation_loop_1_if_dead_1
-
+    cmp r6, #3
+    streqb r8, [r2]
+    beq generation_loop_cmp_end
+    
+    cmp r6, #2
+    strneb r9, [r2]
+    bne generation_loop_cmp_end
+    
+generation_loop_cmp_end:
     add r2, r2, #1
     add r4, r4, #1
 
-    b generation_loop_1
+    b generation_loop
 
-generation_loop_1_if_alive_1:
-    stmfd sp!, {lr}
-
-    cmp r6, #2
-    cmpne r6, #3
-    strneb r9, [r2]
-
-    ldmfd sp!, {lr}
-    mov pc, lr
-
-generation_loop_1_if_dead_1:
-    stmfd sp!, {lr}
-
-    cmpeq r6, #3
-    streqb r8, [r2]
-
-    ldmfd sp!, {lr}
-    mov pc, lr
-
-generation_loop_1_end:
+generation_loop_end:
     ldmfd sp!, {r2-r9, lr}
     mov pc, lr
